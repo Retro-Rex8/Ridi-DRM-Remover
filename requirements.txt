@@ -1,4 +1,3 @@
 cryptography
 PyPDF2
 tkinter
-
