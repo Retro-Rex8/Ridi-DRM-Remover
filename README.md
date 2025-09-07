@@ -19,11 +19,10 @@ To use `Ridi_DRM_Remover`, you need the following:
 
 1.  **Clone the repository (if you haven't already):**
     ```bash
-    git clone https://github.com/YOUR_USERNAME/Ridi_DRM_Remover.git
+    git clone https://https://github.com/meherpraveen/Ridi_DRM_Remover
     cd Ridi_DRM_Remover
     ```
-    (Note: Replace `https://github.com/YOUR_USERNAME/Ridi_DRM_Remover.git` with the actual URL of your repository and `YOUR_USERNAME` with your GitHub username.)
-
+    
 2.  **Create a virtual environment (recommended):**
     ```bash
     python -m venv venv
@@ -88,4 +87,5 @@ python ridi_books.py --device-id YOUR_DEVICE_ID --user-idx YOUR_USER_INDEX
     ```
 
 ## References
+
 * https://github.com/hsj1/ridiculous
