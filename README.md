@@ -53,7 +53,7 @@ To use `Ridi_DRM_Remover`, you need the following:
 ### Step 2: Get Device Information
 
 1.  Open a browser, go to <https://ridibooks.com/account/login> and log in.
-2.  After successfully logging in, go to <https://account.ridibooks.com/api/user-devices/app> to get the device information. Then, in the JSON result, find and note down the values of the fields `device_id` and `user_idx` for the specific device that you use whcih has Ridi app Installed. 
+2.  After successfully logging in, go to <https://account.ridibooks.com/api/user-devices/app> to get the device information. Then, in the JSON result, find and note down the values of the fields `device_id` and `user_idx` for the specific device that you use which has Ridi app Installed.
 
 ### Step 3: Decrypt Your Books
 
@@ -89,3 +89,4 @@ python ridi_books.py --device-id YOUR_DEVICE_ID --user-idx YOUR_USER_INDEX
 ## References
 
 * https://github.com/hsj1/ridiculous
+
