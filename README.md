@@ -19,7 +19,7 @@ To use `Ridi_DRM_Remover`, you need the following:
 
 1.  **Clone the repository (if you haven't already):**
     ```bash
-    git clone https://https://github.com/meherpraveen/Ridi_DRM_Remover
+    git clone https://https://github.com/Retro-Rex8/Ridi-DRM-Remover
     cd Ridi_DRM_Remover
     ```
     
@@ -89,4 +89,5 @@ python ridi_books.py --device-id YOUR_DEVICE_ID --user-idx YOUR_USER_INDEX
 ## References
 
 * https://github.com/hsj1/ridiculous
+
 
