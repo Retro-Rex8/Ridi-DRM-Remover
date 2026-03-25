@@ -368,15 +368,22 @@ def main():
     )
     parser.add_argument(
         "-d", "--device-id",
-        required=True,
+        required=False,
         dest="device_id",
-        help="Device ID (36 characters)"
+        default=None,
+        help="Device ID (36 characters). Auto-detected if not provided."
     )
     parser.add_argument(
         "-u", "--user-idx",
-        required=True,
+        required=False,
         dest="user_idx",
-        help="User index"
+        default=None,
+        help="User index. Auto-detected if not provided."
+    )
+    parser.add_argument(
+        "--auto",
+        action="store_true",
+        help="Auto-extract device_id and user_idx from local Ridibooks data"
     )
     parser.add_argument(
         "--debug",
@@ -387,11 +394,38 @@ def main():
     args = parser.parse_args()
     
     try:
+        device_id = args.device_id
+        user_idx = args.user_idx
+        
+        # Auto-extract if either is missing or --auto is set
+        if args.auto or not device_id or not user_idx:
+            from ridi_auto_extract import auto_extract
+            print("[*] Auto-detecting credentials...", flush=True)
+            auto_device, auto_user = auto_extract(debug=args.debug)
+            
+            if not device_id and auto_device:
+                device_id = auto_device
+                print(f"  [+] Device ID: {device_id}")
+            if not user_idx and auto_user:
+                user_idx = auto_user
+                print(f"  [+] User Index: {user_idx}")
+            print()
+        
+        if not device_id or not user_idx:
+            missing = []
+            if not device_id:
+                missing.append("device_id (-d)")
+            if not user_idx:
+                missing.append("user_idx (-u)")
+            print(f"Error: Could not auto-detect {', '.join(missing)}.", file=sys.stderr)
+            print("Please provide them manually or ensure Ridibooks is installed and logged in.", file=sys.stderr)
+            sys.exit(1)
+        
         # Verify arguments
-        verify(args.device_id, args.user_idx)
+        verify(device_id, user_idx)
         
         # Get library path and book infos
-        lib_path = library_path(args.user_idx)
+        lib_path = library_path(user_idx)
         
         if args.debug:
             print(f"Library path: {lib_path}")
@@ -412,7 +446,7 @@ def main():
         
         # Decrypt all books with progress
         for book_info in infos:
-            decrypt_with_progress(book_info, args.device_id, args.debug)
+            decrypt_with_progress(book_info, device_id, args.debug)
         
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)

@@ -1,13 +1,13 @@
 # -*- mode: python ; coding: utf-8 -*-
-
-block_cipher = None
+# Ridibooks Decryptor v2.0.0 — PyInstaller spec
 
 a = Analysis(
     ['ridi_books_gui.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('icon.ico', '.'), ('icon.png', '.')],
     hiddenimports=[
+        # Core decryption
         'cryptography',
         'cryptography.hazmat.primitives.ciphers',
         'cryptography.hazmat.primitives.ciphers.algorithms',
@@ -16,27 +16,45 @@ a = Analysis(
         'cryptography.hazmat.backends.openssl',
         'cryptography.hazmat.backends.openssl.backend',
         'cryptography.hazmat.primitives.padding',
+        # Standard library
         'xml.etree.ElementTree',
         'pathlib',
         'zipfile',
-        'PyPDF2',  # Optional dependency for PDF title extraction
+        'json',
+        'io',
+        'os',
+        're',
+        'sys',
+        'sqlite3',
+        'shutil',
+        'tempfile',
+        # GUI
         'tkinter',
         'tkinter.ttk',
         'tkinter.scrolledtext',
         'tkinter.messagebox',
         'tkinter.filedialog',
+        # Auto-extraction module
+        'ridi_auto_extract',
+        # Optional: PDF support
+        'PyPDF2',
+        # Optional: API fallback (gracefully fails if not installed)
+        'browser_cookie3',
+        'requests',
+        'requests.adapters',
+        'requests.auth',
+        'urllib3',
+        'certifi',
+        'charset_normalizer',
     ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
-    win_no_prefer_redirects=False,
-    win_private_assemblies=False,
-    cipher=block_cipher,
     noarchive=False,
 )
 
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+pyz = PYZ(a.pure, a.zipped_data)
 
 exe = EXE(
     pyz,
@@ -52,22 +70,24 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,  # GUI application - no console window
+    console=False,           # No console window — GUI only
     disable_windowed_traceback=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=None,  # Add icon='icon.ico' if you have an icon file
+    icon='icon.ico',
+    version_info=None,
 )
 
-# For macOS, create an app bundle
+# macOS app bundle (only used on macOS)
 app = BUNDLE(
     exe,
     name='RidibooksDecryptor.app',
-    icon=None,  # Add icon='icon.icns' for macOS icon
+    icon='icon.ico',
     bundle_identifier='com.ridibooks.decryptor',
     info_plist={
+        'CFBundleShortVersionString': '2.0.0',
         'NSHighResolutionCapable': 'True',
-        'LSMinimumSystemVersion': '10.10.0',
+        'LSMinimumSystemVersion': '10.13.0',
     },
 )

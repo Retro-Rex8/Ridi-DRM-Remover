@@ -19,10 +19,10 @@ To use `Ridi_DRM_Remover`, you need the following:
 
 1.  **Clone the repository (if you haven't already):**
     ```bash
-    git clone https://https://github.com/Retro-Rex8/Ridi-DRM-Remover
+    git clone https://github.com/Retro-Rex8/Ridi-DRM-Remover
     cd Ridi-DRM-Remover
     ```
-    
+
 2.  **Create a virtual environment (recommended):**
     ```bash
     python -m venv venv
@@ -50,18 +50,13 @@ To use `Ridi_DRM_Remover`, you need the following:
 1.  Run the Ridi app installed on your computer.
 2.  Download the books you want from the purchases screen.
 
-### Step 2: Get Device Information
-
-1.  Open a browser, go to <https://ridibooks.com/account/login> and log in.
-2.  After successfully logging in, go to <https://account.ridibooks.com/api/user-devices/app> to get the device information. Then, in the JSON result, find and note down the values of the fields `device_id` and `user_idx` for the specific device that you use which has Ridi app Installed.
-
-### Step 3: Decrypt Your Books
+### Step 2: Decrypt Your Books
 
 You can use either the Graphical User Interface (GUI) or the Command-Line Interface (CLI) to decrypt your books.
 
 (Note: it assumes Default Path for the downloaded books).
 
-#### Using the GUI
+#### Using the GUI (Recommended)
 
 Run the GUI application:
 
@@ -69,26 +64,32 @@ Run the GUI application:
 python ridi_books_gui.py
 ```
 
-Enter your `Device ID` and `User Index` in the respective fields, select an `Output Folder`, and click "Decrypt Books".
+1. Click the **"🔍 Auto Detect Credentials"** button to automatically fill in your Device ID and User Index.
+2. Select an **Output Folder**.
+3. Click **"Decrypt Books"**.
+
+*(If auto-detect fails, you can fill them manually. See "Manual Credential Retrieval" below).*
 
 #### Using the CLI
 
-Run the command-line tool with your `device_id` and `user_idx`:
+Run the command-line tool with the `--auto` flag to automatically detect your credentials and decrypt everything:
 
 ```bash
-python ridi_books.py --device-id YOUR_DEVICE_ID --user-idx YOUR_USER_INDEX
+python ridi_books.py --auto
 ```
 
-*   Replace `YOUR_DEVICE_ID` with the `device_id` you obtained.
-*   Replace `YOUR_USER_INDEX` with the `user_idx` you obtained.
-*   Add `--debug` flag for detailed output:
-    ```bash
-    python ridi_books.py --device-id YOUR_DEVICE_ID --user-idx YOUR_USER_INDEX --debug
-    ```
+*(You can also use `--debug` for detailed output: `python ridi_books.py --auto --debug`)*
+
+### Manual Credential Retrieval (Fallback)
+
+If the auto-detection fails, you will need to find your credentials manually:
+1. Open a browser, go to <https://ridibooks.com/account/login> and log in.
+2. Go to <https://account.ridibooks.com/api/user-devices/app> to get the device information.
+3. In the JSON result, find and note down the `user_idx` for your specific device.
+
+Then, supply them manually:
+*   **GUI**: Enter them directly into the text fields.
+*   **CLI**: `python ridi_books.py --device-id YOUR_DEVICE_ID --user-idx YOUR_USER_INDEX`
 
 ## References
-
 * https://github.com/hsj1/ridiculous
-
-
-

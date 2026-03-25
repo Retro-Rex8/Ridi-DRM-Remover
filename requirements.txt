@@ -1,3 +1,4 @@
 cryptography
 PyPDF2
-
+browser_cookie3
+requests

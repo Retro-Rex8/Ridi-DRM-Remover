@@ -299,9 +299,24 @@ class RidibooksDecryptorGUI:
         self.root.title("Ridibooks Decryptor")
         self.root.geometry("700x600")
         
-        # Set icon if on Windows
-        if sys.platform == "win32":
-            self.root.iconbitmap(default='')
+        # Set window icon (works from both .py and .exe)
+        import sys as _sys, os as _os
+        if _sys.platform == "win32":
+            # Get base dir — works both in script and PyInstaller bundle
+            _base = getattr(_sys, '_MEIPASS', _os.path.dirname(_os.path.abspath(__file__)))
+            _ico = _os.path.join(_base, 'icon.ico')
+            _png = _os.path.join(_base, 'icon.png')
+            if _os.path.exists(_ico):
+                try:
+                    self.root.iconbitmap(_ico)
+                except Exception:
+                    pass
+            if _os.path.exists(_png):
+                try:
+                    _img = tk.PhotoImage(file=_png)
+                    self.root.iconphoto(True, _img)
+                except Exception:
+                    pass
         
         # Queue for thread communication
         self.queue = queue.Queue()
@@ -324,40 +339,45 @@ class RidibooksDecryptorGUI:
                                 font=('Helvetica', 16, 'bold'))
         title_label.grid(row=0, column=0, columnspan=3, pady=(0, 20))
         
+        # Auto Detect button (spans full width, prominent placement)
+        auto_detect_button = ttk.Button(main_frame, text="🔍 Auto Detect Credentials", 
+                                         command=self.auto_detect_credentials)
+        auto_detect_button.grid(row=1, column=0, columnspan=3, pady=(0, 10), sticky=(tk.W, tk.E))
+        
         # Device ID input
-        ttk.Label(main_frame, text="Device ID:").grid(row=1, column=0, sticky=tk.W, pady=5)
+        ttk.Label(main_frame, text="Device ID:").grid(row=2, column=0, sticky=tk.W, pady=5)
         self.device_id_var = tk.StringVar()
         device_id_entry = ttk.Entry(main_frame, textvariable=self.device_id_var, width=50)
-        device_id_entry.grid(row=1, column=1, columnspan=2, sticky=(tk.W, tk.E), pady=5, padx=(5, 0))
+        device_id_entry.grid(row=2, column=1, columnspan=2, sticky=(tk.W, tk.E), pady=5, padx=(5, 0))
         
         # Character count label for Device ID
         self.device_id_count = ttk.Label(main_frame, text="0/36 characters", foreground="gray")
-        self.device_id_count.grid(row=2, column=1, sticky=tk.W, padx=(5, 0))
+        self.device_id_count.grid(row=3, column=1, sticky=tk.W, padx=(5, 0))
         self.device_id_var.trace('w', self.update_device_id_count)
         
         # User Index input
-        ttk.Label(main_frame, text="User Index:").grid(row=3, column=0, sticky=tk.W, pady=5)
+        ttk.Label(main_frame, text="User Index:").grid(row=4, column=0, sticky=tk.W, pady=5)
         self.user_idx_var = tk.StringVar()
         user_idx_entry = ttk.Entry(main_frame, textvariable=self.user_idx_var, width=50)
-        user_idx_entry.grid(row=3, column=1, columnspan=2, sticky=(tk.W, tk.E), pady=5, padx=(5, 0))
+        user_idx_entry.grid(row=4, column=1, columnspan=2, sticky=(tk.W, tk.E), pady=5, padx=(5, 0))
         
         # Output directory selection
-        ttk.Label(main_frame, text="Output Folder:").grid(row=4, column=0, sticky=tk.W, pady=5)
+        ttk.Label(main_frame, text="Output Folder:").grid(row=5, column=0, sticky=tk.W, pady=5)
         self.output_dir_var = tk.StringVar(value=str(Path.cwd()))
         output_dir_entry = ttk.Entry(main_frame, textvariable=self.output_dir_var, width=40)
-        output_dir_entry.grid(row=4, column=1, sticky=(tk.W, tk.E), pady=5, padx=(5, 0))
+        output_dir_entry.grid(row=5, column=1, sticky=(tk.W, tk.E), pady=5, padx=(5, 0))
         
         browse_button = ttk.Button(main_frame, text="Browse...", command=self.browse_output_dir)
-        browse_button.grid(row=4, column=2, pady=5, padx=(5, 0))
+        browse_button.grid(row=5, column=2, pady=5, padx=(5, 0))
         
         # Debug mode checkbox
         self.debug_var = tk.BooleanVar(value=False)
         debug_check = ttk.Checkbutton(main_frame, text="Debug mode", variable=self.debug_var)
-        debug_check.grid(row=5, column=0, columnspan=2, sticky=tk.W, pady=10)
+        debug_check.grid(row=6, column=0, columnspan=2, sticky=tk.W, pady=10)
         
         # Buttons frame
         button_frame = ttk.Frame(main_frame)
-        button_frame.grid(row=6, column=0, columnspan=3, pady=10)
+        button_frame.grid(row=7, column=0, columnspan=3, pady=10)
         
         self.decrypt_button = ttk.Button(button_frame, text="Decrypt Books", 
                                          command=self.start_decryption)
@@ -369,30 +389,30 @@ class RidibooksDecryptorGUI:
         
         # Progress bar
         self.progress = ttk.Progressbar(main_frame, mode='indeterminate')
-        self.progress.grid(row=7, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=10)
+        self.progress.grid(row=8, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=10)
         
         # Status label
         self.status_label = ttk.Label(main_frame, text="Ready", foreground="blue")
-        self.status_label.grid(row=8, column=0, columnspan=3, pady=5)
+        self.status_label.grid(row=9, column=0, columnspan=3, pady=5)
         
         # Output text area with scrollbar
         output_frame = ttk.LabelFrame(main_frame, text="Output", padding="5")
-        output_frame.grid(row=9, column=0, columnspan=3, sticky=(tk.W, tk.E, tk.N, tk.S), pady=10)
+        output_frame.grid(row=10, column=0, columnspan=3, sticky=(tk.W, tk.E, tk.N, tk.S), pady=10)
         output_frame.columnconfigure(0, weight=1)
         output_frame.rowconfigure(0, weight=1)
-        main_frame.rowconfigure(9, weight=1)
+        main_frame.rowconfigure(10, weight=1)
         
         self.output_text = scrolledtext.ScrolledText(output_frame, height=15, width=70, wrap=tk.WORD)
         self.output_text.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         
         # Clear button
         clear_button = ttk.Button(main_frame, text="Clear Output", command=self.clear_output)
-        clear_button.grid(row=10, column=0, columnspan=3, pady=5)
+        clear_button.grid(row=11, column=0, columnspan=3, pady=5)
         
         # Help text
-        help_text = "Enter your 36-character Device ID and User Index to decrypt your Ridibooks library."
+        help_text = "Click 'Auto Detect' to fill credentials automatically, or enter manually."
         help_label = ttk.Label(main_frame, text=help_text, foreground="gray", wraplength=650)
-        help_label.grid(row=11, column=0, columnspan=3, pady=(10, 0))
+        help_label.grid(row=12, column=0, columnspan=3, pady=(10, 0))
         
         self.stop_flag = False
         
@@ -406,6 +426,22 @@ class RidibooksDecryptorGUI:
             self.device_id_count.config(foreground="red")
         else:
             self.device_id_count.config(foreground="gray")
+    
+    def auto_detect_credentials(self):
+        """Auto-detect device_id and user_idx from local Ridibooks data"""
+        self.status_label.config(text="Auto-detecting...", foreground="blue")
+        self.root.update_idletasks()
+        
+        def _detect():
+            try:
+                from ridi_auto_extract import auto_extract
+                device_id, user_idx = auto_extract(debug=self.debug_var.get())
+                self.queue.put(("auto_detect", device_id, user_idx))
+            except Exception as e:
+                self.queue.put(("auto_detect_error", str(e)))
+        
+        thread = threading.Thread(target=_detect, daemon=True)
+        thread.start()
     
     def browse_output_dir(self):
         """Open a directory browser"""
@@ -459,6 +495,24 @@ class RidibooksDecryptorGUI:
                     self.decrypt_button.config(state='normal')
                     self.stop_button.config(state='disabled')
                     self.progress.stop()
+                
+                elif item[0] == "auto_detect":
+                    _, device_id, user_idx = item
+                    found = []
+                    if device_id:
+                        self.device_id_var.set(device_id)
+                        found.append("Device ID")
+                    if user_idx:
+                        self.user_idx_var.set(user_idx)
+                        found.append("User Index")
+                    if found:
+                        self.status_label.config(text=f"✓ Auto-detected: {', '.join(found)}", foreground="green")
+                    else:
+                        self.status_label.config(text="⚠ Could not auto-detect credentials", foreground="red")
+                
+                elif item[0] == "auto_detect_error":
+                    _, error_msg = item
+                    self.status_label.config(text=f"Auto-detect error: {error_msg}", foreground="red")
                     
         except queue.Empty:
             pass
@@ -471,11 +525,25 @@ class RidibooksDecryptorGUI:
         user_idx = self.user_idx_var.get().strip()
         output_dir = Path(self.output_dir_var.get())
         
+        # Auto-detect if fields are empty
+        if not device_id or not user_idx:
+            try:
+                from ridi_auto_extract import auto_extract
+                auto_device, auto_user = auto_extract(debug=self.debug_var.get())
+                if not device_id and auto_device:
+                    device_id = auto_device
+                    self.device_id_var.set(device_id)
+                if not user_idx and auto_user:
+                    user_idx = auto_user
+                    self.user_idx_var.set(user_idx)
+            except Exception:
+                pass
+        
         # Validate inputs
         try:
             verify(device_id, user_idx)
         except ValueError as e:
-            messagebox.showerror("Invalid Input", str(e))
+            messagebox.showerror("Invalid Input", str(e) + "\n\nTip: Click 'Auto Detect Credentials' to fill these automatically.")
             return
         
         if not output_dir.exists():
